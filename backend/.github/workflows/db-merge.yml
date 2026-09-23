@@ -1,0 +1,52 @@
+---
+name: Reboot database
+run-name: "${{github.ref_name}}: #${{github.run_id}}"
+
+defaults:
+  run:
+    shell: bash
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - teste-merge-db
+      - "chips"
+      - "supernatural"
+      - "ron-bugado"
+      - "lost"
+      - "quality-eagles"
+      - "qualitys-hunters"
+      - "convergentes"
+      - "the-originals"
+      - "the-mentalists"
+      - "squad-black-list"
+      - "suits"
+      - "invictus"
+
+jobs:
+  check-container-state:
+    if: github.event.pull_request.merged == true && github.head_ref == 'develop'
+    runs-on: [database, academy, vps]
+    steps: 
+    - name: check if container is running
+      run: |
+
+          if [ $(docker ps | grep ${{github.ref_name}} | wc -l) -eq 1 ]; then
+            echo "CONTAINER ${{github.ref_name}} FOUND..."
+          else
+            echo "CONTAINER ${{github.ref_name}} NOT FOUND..."
+            exit 1
+          fi
+  reboot-container:
+    runs-on: [database, academy, vps]
+    needs: [check-container-state]
+    steps:
+    - name: down container  
+      run: |
+        echo "teste"
+        docker-compose -f "/docker-images/mongo/${{github.ref_name}}/docker-compose.yml" down -v
+    - name: up container
+      run: |
+        docker-compose -f "/docker-images/mongo/${{github.ref_name}}/docker-compose.yml" up -d 
+        echo "CONTAINER REBOOTED..."

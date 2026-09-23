@@ -1,0 +1,109 @@
+name: Merged Pull Request workflow Para develop URL
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+
+jobs:
+  # sonarqube-analysis:
+  #   name: SonarQube Analysis
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+  #     - uses: sonarsource/sonarqube-scan-action@master
+  #       env:
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+  #     # If you wish to fail your job when the Quality Gate is red, uncomment the
+  #     # following lines. This would typically be used to fail a deployment.
+  #     - uses: sonarsource/sonarqube-quality-gate-action@master
+  #       timeout-minutes: 5
+  #       env:
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}         
+      
+  deploy:
+    runs-on: ubuntu-latest
+    # needs: sonarqube-analysis  # Define a dependência do job sonarqube-analysis
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v3
+        
+      - name: criar ./temp
+        run: mkdir -p temp 
+
+      - name: Criar .env
+        run: touch .env ./temp 
+        
+      - name: Extract Branch Info
+        id: branch_info
+        run: |
+          echo "pbi=9998" > ./temp/.env
+          echo "branch_back_end=develop" >> ./temp/.env
+          echo "branch_front_end=main" >> ./temp/.env
+          echo "subdominio=develop" >> ./temp/.env
+         
+      - name: copia .sh
+        run: cp $GITHUB_WORKSPACE/.github/workflows/old-merged_Github_Auto_Deploy-New-Backend-erp.sh ./temp
+        
+      - name: listando pastas
+        run: ls -a ./temp
+        
+      - name: cat .env
+        run: cat ./temp/.env
+        
+      - name: cat .sh
+        run: cat ./temp/old-merged_Github_Auto_Deploy-New-Backend-erp.sh              
+        
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+           server: ftp.qacoders-academy.com.br
+           username: ${{ secrets.FTP_USER }}
+           password: ${{ secrets.FTP_PASSWORD }}
+           protocol: ftps
+           local-dir: ./temp/
+           server-dir: /actionsdeploy-homolog/new-backend-erp/
+           dangerous-clean-slate: true
+          
+          
+      # - name: SSH into remote server
+      #   uses: webfactory/ssh-agent@v0.8.0
+      #   with:
+      #     ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          
+      # - name: Executando chown
+      #   run: |
+      #     ssh -T -o StrictHostKeyChecking=no root@191.252.210.196 'chown -R pipeline:www-data /var/www/html/actionsdeploy-homolog/new-backend-erp/'
+      
+      # - name: Executando chmod +x
+      #   run: |
+      #     ssh -T -o StrictHostKeyChecking=no root@191.252.210.196 'chmod +x /var/www/html/actionsdeploy-homolog/new-backend-erp/old-merged_Github_Auto_Deploy-New-Backend-erp.sh'     
+     
+      # - name: Executando script no server remoto
+      #   run: |
+      #     ssh -T -o StrictHostKeyChecking=no root@191.252.210.196 'cd /var/www/html/actionsdeploy-homolog/new-backend-erp && bash /var/www/html/actionsdeploy-homolog/new-backend-erp/old-merged_Github_Auto_Deploy-New-Backend-erp.sh'
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 191.252.210.196 >> ~/.ssh/known_hosts
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      
+      - name: Executando chown
+        run: |
+          ssh -T -o StrictHostKeyChecking=no root@191.252.210.196 'chown -R pipeline:www-data /var/www/html/actionsdeploy-homolog/new-backend-erp/'
+      
+      - name: Executando chmod +x
+        run: |
+          ssh -T -o StrictHostKeyChecking=no root@191.252.210.196 'chmod +x /var/www/html/actionsdeploy-homolog/new-backend-erp/old-merged_Github_Auto_Deploy-New-Backend-erp.sh'     
+     
+      - name: Executando script no server remoto
+        run: |
+          ssh -T -o StrictHostKeyChecking=no root@191.252.210.196 'cd /var/www/html/actionsdeploy-homolog/new-backend-erp && bash /var/www/html/actionsdeploy-homolog/new-backend-erp/old-merged_Github_Auto_Deploy-New-Backend-erp.sh'
+      

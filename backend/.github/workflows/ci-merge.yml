@@ -1,0 +1,97 @@
+---
+name: "PR Merge: Squad Branches"
+run-name: "${{ github.ref_name }}: #${{ github.run_id }}"
+
+defaults:
+  run:
+    shell: bash
+
+on:
+  push:
+    branches: 
+      - "chips"
+      - "supernatural"
+      - "locke-key"
+      - "loki"
+      - "ron-bugado"
+      - "short-circuit"
+      - "esquadrao-classe-a"
+      - "convergentes"
+      - "todo-mundo-odeia-o-chris"
+      - "arquivo-x"
+      - "lost"
+      - "qualitys-hunters"
+      - "viajantes-do-tempo"
+      - "the-originals"
+      - "quality-eagles"
+      - "the-mentalists"
+      - "squad-black-list"
+      - "a-super-maquina"
+      - "suits"
+      - "invictus"
+      
+jobs:
+  build:
+    name: "Build Artifact"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout Code"
+        uses: actions/checkout@v4
+        id: checkout
+        with: 
+          ref: ${{github.ref}}
+          persist-credentials : true
+          fetch-depth: 1
+          fetch-tags: false
+          clean: true
+          
+      - name: "Run Git Archive"
+        id: run_git_archive
+        run: |
+          git archive --format=tar HEAD | gzip > ${{github.ref_name}}-${{ github.run_id }}.tar.gz
+
+      - name: "Upload Build Artifact"
+        uses: actions/upload-artifact@v4
+        id: upload_artifact
+        with:
+          name: "${{github.ref_name}}-${{ github.run_id }}"
+          path: "${{github.ref_name}}-${{ github.run_id }}.tar.gz"
+          if-no-files-found: "error"
+          retention-days: 7
+          compression-level: 0
+          overwrite: true
+          include-hidden-files: false
+          
+    
+  deploy:
+    name: "Deploy"
+    runs-on: [academy, vps, kinghost]
+    needs: [build]
+
+    steps:
+      - name: "Clean Destination Directory"
+        id: clean_dest_dir
+        run: |
+          rm -rf ${{github.workspace}}/${{github.ref_name}} || true
+
+      - name: "Download Build Artifact"
+        uses: actions/download-artifact@v4
+        id: download_artifact
+        with:
+          name: "${{github.ref_name}}-${{ github.run_id }}"
+          path: ${{github.workspace}}/${{github.ref_name}}
+
+      - name: "Decompress Artifact"
+        id: decompress_artifact
+        run: |
+          tar -xzf ${{github.workspace}}/${{github.ref_name}}/${{github.ref_name}}-${{ github.run_id }}.tar.gz -C ${{github.workspace}}/${{github.ref_name}}
+          rm -rf ${{github.workspace}}/${{github.ref_name}}/${{github.ref_name}}-${{ github.run_id }}.tar.gz
+      
+      - name: "Check directory"
+        run: |
+          ls -la ${{github.workspace}}
+      - name: "Run Deploy Script"
+        id: run_deploy_script
+        run: |
+          ${{github.workspace}}/${{github.ref_name}}/.github/workflows/deploy.sh ${{github.ref_name}} ${{github.workspace}}/${{github.ref_name}}

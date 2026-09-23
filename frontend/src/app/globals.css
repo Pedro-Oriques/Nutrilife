@@ -1,0 +1,595 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary-100: #fbe2e0;
+  --color-primary-200: #f5aea7;
+  --color-primary-300: #f17361;
+  --color-primary-400: #c94a31;
+  --color-primary-700: #290904;
+
+  --color-secondary-100: #baffe5;
+  --color-secondary-200: #00b890;
+  --color-secondary-300: #008f6f;
+  --color-secondary-400: #00674f;
+  --color-secondary-700: #002017;
+
+  --color-grey-100: #f4f4f4;
+  --color-grey-200: #151313;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+/* Light mode tokens */
+:root {
+  --bg-page: #fafefc;
+  --bg-sidebar: #e9e7e7;
+  --bg-card: #ffffff;
+  --bg-input: #f4f4f4;
+  --text-primary: #002017;
+  --text-muted: rgba(0, 32, 23, 0.7);
+  --border-green: #008f6f;
+  --sidebar-border: #f5aea7;
+}
+
+/* Dark mode tokens */
+html.dark {
+  --bg-page: #121212;
+  --bg-sidebar: #1e1e1e;
+  --bg-card: #242424;
+  --bg-input: #2a2a2a;
+  --text-primary: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.6);
+  --border-green: #008f6f;
+  --sidebar-border: #333333;
+}
+
+html.dark .bg-dash {
+  background:
+    linear-gradient(rgba(18, 18, 18, 0.92), rgba(18, 18, 18, 0.92)),
+    url("/backgroundDash.png") center / cover no-repeat;
+}
+
+/* Apply dark mode to common dashboard elements */
+html.dark aside {
+  background-color: var(--bg-sidebar) !important;
+}
+
+html.dark nav.fixed {
+  background-color: var(--bg-sidebar) !important;
+}
+
+html.dark .bg-\[#F8F9F9\] {
+  background-color: var(--bg-page) !important;
+}
+
+html.dark input,
+html.dark select {
+  background-color: var(--bg-input) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-green) !important;
+}
+
+html.dark option {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+}
+
+/* Date input calendar icon in dark mode */
+html.dark input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+/* Override hardcoded dark text in dark mode */
+html.dark .text-\[\#002017\] {
+  color: #ffffff !important;
+}
+
+html.dark .text-\[\#002017\]\/70 {
+  color: rgba(255,255,255,0.6) !important;
+}
+
+html.dark .text-secondary-700 {
+  color: #ffffff !important;
+}
+
+html.dark .text-gray-800 {
+  color: #ffffff !important;
+}
+
+html.dark .text-gray-700 {
+  color: #e0e0e0 !important;
+}
+
+html.dark .text-gray-600 {
+  color: #cccccc !important;
+}
+
+html.dark .text-gray-500 {
+  color: #aaaaaa !important;
+}
+
+html.dark .text-gray-400 {
+  color: #999999 !important;
+}
+
+html.dark .text-\[\#00674F\] {
+  color: #4ade80 !important;
+}
+
+html.dark .border-\[\#008F6F\] {
+  border-color: #555555 !important;
+}
+
+html.dark .border-\[\#00674F\] {
+  border-color: #4ade80 !important;
+}
+
+/* Dropdown menus in dark mode */
+html.dark .bg-white {
+  background-color: var(--bg-card) !important;
+  color: #ffffff;
+}
+
+html.dark .hover\:bg-\[#F4F8F6\]:hover {
+  background-color: rgba(255,255,255,0.05) !important;
+}
+
+/* Cards and panels */
+html.dark .bg-\[#E9E7E7\] {
+  background-color: var(--bg-sidebar) !important;
+}
+
+html.dark .bg-\[#F4F4F4\] {
+  background-color: var(--bg-input) !important;
+}
+
+html.dark .bg-gray-50 {
+  background-color: #1e1e1e !important;
+}
+
+html.dark .bg-gray-100 {
+  background-color: #1a1a1a !important;
+}
+
+html.dark .hover\:bg-gray-50:hover {
+  background-color: #2a2a2a !important;
+}
+
+html.dark .hover\:bg-gray-100:hover {
+  background-color: #2a2a2a !important;
+}
+
+html.dark .border-gray-200 {
+  border-color: #333333 !important;
+}
+
+html.dark .border-gray-100 {
+  border-color: #2a2a2a !important;
+}
+
+html.dark .border-gray-50 {
+  border-color: #222222 !important;
+}
+
+html.dark .border-gray-300 {
+  border-color: #444444 !important;
+}
+
+html.dark .divide-gray-100 > * {
+  border-color: #2a2a2a !important;
+}
+
+html.dark .text-\[\#002017\].opacity-70 {
+  color: rgba(255,255,255,0.6) !important;
+  opacity: 1 !important;
+}
+
+/* Search food modal dark mode */
+html.dark .text-\[\#000000\] {
+  color: #ffffff !important;
+}
+
+html.dark input.search-input-transparent,
+html.dark input.search-input-transparent:focus,
+html.dark input[class*="search-input-transparent"] {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+button {
+  cursor: pointer;
+}
+
+.bg-dash {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)),
+    url("/backgroundDash.png") center / cover no-repeat;
+}
+
+@media print {
+  @page {
+    size: auto;
+    margin: 15mm;
+  }
+
+  /* Hide UI chrome */
+  .no-print { display: none !important; }
+
+  /* Show print-only elements */
+  .print-only { display: block !important; }
+
+  /* Reset page layout so main fills full width */
+  body, html {
+    background: white !important;
+    color: #002017 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Override dark mode variables */
+  :root, html.dark {
+    --bg-page: #ffffff !important;
+    --bg-card: #ffffff !important;
+    --bg-input: #f4f4f4 !important;
+    --text-primary: #002017 !important;
+  }
+
+  /* The outer wrapper: remove fixed height/overflow so content flows */
+  .h-screen { height: auto !important; overflow: visible !important; }
+  .overflow-hidden { overflow: visible !important; }
+
+  /* Main content area fills full width (sidebar is hidden) */
+  .print-main {
+    overflow: visible !important;
+    flex: 1 !important;
+    width: 100% !important;
+  }
+
+  /* Chart + cards: side by side in print */
+  .print-row {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 16px !important;
+    align-items: stretch !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Summary cards column: fixed width on the right */
+  .print-summary {
+    width: 220px !important;
+    min-width: 220px !important;
+    flex-shrink: 0 !important;
+    align-self: stretch !important;
+  }
+  .print-cards-row {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  .print-cards-row > * {
+    padding: 10px 12px !important;
+  }
+  .print-cards-row .text-\[20px\] {
+    font-size: 13px !important;
+  }
+  .print-cards-row .text-\[24px\] {
+    font-size: 16px !important;
+  }
+
+  /* Chart: takes remaining width, fixed size handled by React */
+  .print-chart {
+    flex: 1 !important;
+    min-width: 0 !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+  .print-chart-inner {
+    height: auto !important;
+  }
+
+  /* Table section: avoid breaking mid-row */
+  .print-table-section {
+    break-inside: auto;
+    margin-top: 16px !important;
+  }
+  .print-table-section h2 {
+    font-size: 18px !important;
+    margin-bottom: 8px !important;
+  }
+  .print-table-section tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .print-table-section td,
+  .print-table-section th {
+    padding: 6px 10px !important;
+    font-size: 12px !important;
+  }
+
+  /* Compact the page padding */
+  .print-main .max-w-\[1440px\] > div {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    gap: 12px !important;
+  }
+
+  /* Compact print header */
+  .print-only h1 {
+    font-size: 24px !important;
+    margin-bottom: 2px !important;
+  }
+  .print-only p {
+    font-size: 13px !important;
+    margin-top: 0 !important;
+  }
+
+  /* Override Tailwind responsive width classes that interfere */
+  .xl\:w-\[280px\] { width: 220px !important; }
+  .xl\:flex-\[2\] { flex: 1 !important; }
+  .xl\:w-0 { width: auto !important; }
+
+  /* Force light mode — neutralize dark mode CSS variables */
+  * {
+    box-shadow: none !important;
+    --tw-text-opacity: 1;
+  }
+  body, html, div, main, section, article {
+    background-color: white !important;
+  }
+  .bg-white { background-color: #ffffff !important; }
+  .bg-gray-50 { background-color: #f9fafb !important; }
+  .border-gray-100 { border-color: #f3f4f6 !important; }
+  .border-gray-200 { border-color: #e5e7eb !important; }
+
+  /* Force all text colors explicitly */
+  .text-\[\#002017\] { color: #002017 !important; }
+  .text-\[\#00674F\] { color: #00674F !important; }
+  .text-\[\#C94A31\] { color: #C94A31 !important; }
+  .text-gray-700 { color: #374151 !important; }
+  .text-gray-600 { color: #4b5563 !important; }
+  .text-gray-500 { color: #6b7280 !important; }
+  .text-gray-400 { color: #9ca3af !important; }
+  .font-semibold, .font-bold, .font-extrabold { color: inherit; }
+
+  /* Catch-all: any element using CSS var for color falls back to dark */
+  [style*="--text-primary"] { color: #002017 !important; }
+  [style*="--bg-page"] { background-color: #ffffff !important; }
+}
+
+/* Hidden on screen, visible only when printing */
+.print-only { display: none; }
+
+/* Force light mode for landing page and auth modals */
+.force-light {
+  color-scheme: light;
+  background-color: #FAFEFC !important;
+}
+
+.force-light * {
+  color-scheme: light;
+}
+
+/* Override ALL dark mode effects inside force-light */
+html.dark .force-light,
+html.dark .force-light * {
+  --bg-page: #fafefc !important;
+  --bg-card: #ffffff !important;
+  --bg-input: #f4f4f4 !important;
+  --text-primary: #002017 !important;
+}
+
+html.dark .force-light .bg-white {
+  background-color: #ffffff !important;
+  color: initial !important;
+}
+
+html.dark .force-light .bg-white\/90 {
+  background-color: rgba(255,255,255,0.9) !important;
+}
+
+html.dark .force-light .bg-\[#F8F9F9\] {
+  background-color: #F8F9F9 !important;
+}
+
+html.dark .force-light .bg-\[#FAFEFC\] {
+  background-color: #FAFEFC !important;
+}
+
+html.dark .force-light .bg-\[#f0faf7\] {
+  background-color: #f0faf7 !important;
+}
+
+html.dark .force-light .min-h-screen {
+  background-color: #ffffff !important;
+}
+
+html.dark .force-light .text-\[\#002017\] {
+  color: #002017 !important;
+}
+
+html.dark .force-light .text-gray-900 {
+  color: #111827 !important;
+}
+
+html.dark .force-light .text-gray-800 {
+  color: #1f2937 !important;
+}
+
+html.dark .force-light .text-gray-700 {
+  color: #374151 !important;
+}
+
+html.dark .force-light .text-gray-600 {
+  color: #4b5563 !important;
+}
+
+html.dark .force-light .text-gray-500 {
+  color: #6b7280 !important;
+}
+
+html.dark .force-light .text-gray-400 {
+  color: #9ca3af !important;
+}
+
+html.dark .force-light .text-\[\#00674F\] {
+  color: #00674F !important;
+}
+
+html.dark .force-light .border-\[\#008F6F\] {
+  border-color: #008F6F !important;
+}
+
+html.dark .force-light .border-\[\#00674F\] {
+  border-color: #00674F !important;
+}
+
+html.dark .force-light .border-gray-100 {
+  border-color: #f3f4f6 !important;
+}
+
+html.dark .force-light .border-gray-200 {
+  border-color: #e5e7eb !important;
+}
+
+html.dark .force-light .bg-gray-50 {
+  background-color: #f9fafb !important;
+}
+
+html.dark .force-light .bg-gray-100 {
+  background-color: #f3f4f6 !important;
+}
+
+html.dark .force-light .hover\:bg-gray-50:hover {
+  background-color: #f9fafb !important;
+}
+
+html.dark .force-light .hover\:bg-gray-100:hover {
+  background-color: #f3f4f6 !important;
+}
+
+html.dark .force-light input,
+html.dark .force-light select {
+  background-color: #ffffff !important;
+  color: #002017 !important;
+  border-color: #008f6f !important;
+}
+
+html.dark .force-light aside {
+  background-color: #e9e7e7 !important;
+}
+
+html.dark .force-light nav.fixed {
+  background-color: #e9e7e7 !important;
+}
+
+html.dark .force-light .bg-\[#E9E7E7\] {
+  background-color: #E9E7E7 !important;
+}
+
+html.dark .force-light .bg-\[#F4F4F4\] {
+  background-color: #F4F4F4 !important;
+}
+
+html.dark .force-light .text-secondary-700 {
+  color: #002017 !important;
+}
+
+/* Prevent dark mode from overriding bg-secondary-700 inside force-light (footer/header) */
+html.dark .force-light .bg-secondary-700 {
+  background-color: #002017 !important;
+}
+
+html.dark .force-light input,
+html.dark .force-light select {
+  background-color: #f4f4f4 !important;
+  color: #002017 !important;
+  border-color: #008f6f !important;
+}
+
+html.dark .force-light input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: none !important;
+}
+
+/* Custom scrollbar for auth modals and search food modal */
+.custom-scroll {
+  scrollbar-width: auto;
+  scrollbar-color: #C94A31 var(--bg-input);
+}
+
+.custom-scroll::-webkit-scrollbar {
+  width: 16px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: var(--bg-input);
+  border-radius: 99px;
+  margin: 16px 0;
+  border-right: 4px solid transparent;
+  background-clip: padding-box;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: #C94A31;
+  border-radius: 99px;
+  min-height: 60px;
+  border-right: 4px solid transparent;
+  background-clip: padding-box;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: #a33a24;
+  background-clip: padding-box;
+}
+
+.custom-scroll::-webkit-scrollbar-button {
+  display: none;
+  height: 0;
+  width: 0;
+}
+
+.custom-scroll::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Compact dashboard on short screens (height < 780px) */
+@media (max-height: 780px) and (min-width: 1024px) {
+  .dashboard-right h3 { font-size: 15px !important; }
+  .dashboard-right .macro-label { font-size: 13px !important; }
+  .dashboard-right .macro-dot { width: 14px !important; height: 14px !important; }
+  .dashboard-right .calorie-total { font-size: 28px !important; }
+  .dashboard-right .calorie-denom { font-size: 18px !important; }
+  .dashboard-right .progress-bar { height: 16px !important; }
+  .dashboard-right .water-consumed { font-size: 24px !important; }
+  .dashboard-right .water-goal { font-size: 18px !important; }
+  .dashboard-right .water-cup { width: 56px !important; height: 72px !important; }
+  .dashboard-right .section-gap { margin-bottom: 8px !important; margin-top: 4px !important; }
+  .dashboard-right .macro-gap { gap: 6px !important; margin-bottom: 8px !important; }
+  .dashboard-right .disclaimer { margin-bottom: 8px !important; }
+  .dashboard-header h1 { font-size: 32px !important; }
+  .dashboard-header .date-text { margin-top: 4px !important; }
+}

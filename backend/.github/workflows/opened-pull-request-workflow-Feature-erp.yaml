@@ -1,0 +1,79 @@
+# workflow triggered por requisição de pull request
+name: Opened Pull Request workflow
+on:
+  pull_request:
+    types:
+      - opened
+  workflow_dispatch:
+  
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Indica que o este workflow só será ativado quando for aberto um pull request para "develop"
+    if: ${{ github.event.pull_request.base.ref == 'develop' }}
+    
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v3
+        
+      - name: criando pasta temp e arquivo .env
+        run: mkdir -p temp && touch .env ./temp 
+        
+      - name: Coletando informações das branchs
+        id: branch_info
+        run: |
+          real_branch_name=${{ github.head_ref }}
+          branch_name=$(echo "${{ github.head_ref }}" | tr '/' '-')
+          last_4_digits=${branch_name: -4}
+          
+          #echo "branch_name=${branch_name}" >> $GITHUB_OUTPUT
+          #echo "last_4_digits=${last_4_digits}" >> $GITHUB_OUTPUT
+          
+          echo "branch_name=${branch_name}"
+          echo "last_4_digits=${last_4_digits}"
+          
+          echo "pbi=${last_4_digits}" > ./temp/.env
+          echo "branch_back_end=${branch_name}" >> ./temp/.env
+          echo "repositorio=erp" >> ./temp/.env
+          echo "real_branch_name=${real_branch_name}" >> ./temp/.env
+
+      - name: copia .sh
+        run: cp $GITHUB_WORKSPACE/.github/workflows/opened-PR-New-Backend-erp.sh ./temp
+        
+      - name: listando arquivos
+        run: ls -a ./temp
+        
+      - name: cat .env
+        run: cat ./temp/.env
+        
+      - name: cat script
+        run: cat ./temp/opened-PR-New-Backend-erp.sh               
+        
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+           server: ftp.qacoders-academy.com.br
+           username: ${{ secrets.FTP_USER }}
+           password: ${{ secrets.FTP_PASSWORD }}
+           protocol: ftps
+           local-dir: ./temp/
+           server-dir: /actionsdeploy-teste/backend-express-erp/
+           dangerous-clean-slate: true
+          
+          
+      - name: SSH into remote server
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          
+      - name: Executando chown
+        run: |
+          ssh -T -o StrictHostKeyChecking=no root@191.252.210.196 'chown -R pipeline:www-data /var/www/html/actionsdeploy-teste/backend-express-erp/'
+      
+      - name: Executando chmod +x
+        run: |
+          ssh -T -o StrictHostKeyChecking=no root@191.252.210.196 'chmod +x /var/www/html/actionsdeploy-teste/backend-express-erp/opened-PR-New-Backend-erp.sh'     
+     
+      - name: Executando script no server remoto
+        run: |
+          ssh -T -o StrictHostKeyChecking=no root@191.252.210.196 'cd /var/www/html/actionsdeploy-teste/backend-express-erp && bash /var/www/html/actionsdeploy-teste/backend-express-erp/opened-PR-New-Backend-erp.sh'

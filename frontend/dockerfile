@@ -1,0 +1,41 @@
+# Estágio 1: Instalação de dependências
+FROM node:20-alpine AS deps
+WORKDIR /app
+
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+
+# Estágio 2: Build da aplicação
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+# NEXT_PUBLIC_* são embutidas em tempo de build pelo Next.js (não em runtime)
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
+# Copia node_modules do estágio anterior para agilizar o build
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+# Desabilita telemetria do Next.js durante o build e gera o standalone
+ENV NEXT_TELEMETRY_DISABLED 1
+RUN yarn build
+
+# Estágio 3: Imagem Final (Runner)
+FROM node:20-alpine AS runner
+WORKDIR /app
+
+# Instala curl para o Healthcheck definido no seu Docker Compose
+RUN apk add --no-cache curl bash
+
+ENV NODE_ENV=development
+ENV NEXT_TELEMETRY_DISABLED 1
+
+# Copia apenas os arquivos estritamente necessários gerados pelo modo standalone
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+
+EXPOSE 3000
+
+# Executa o servidor otimizado do Next.js
+CMD ["node", "server.js"]

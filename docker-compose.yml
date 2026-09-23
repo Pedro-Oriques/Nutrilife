@@ -1,0 +1,60 @@
+
+services:
+backend:
+build: 
+context: ./backend
+dockerfile: dockerfile
+restart: always
+env_file:
+- ./backend/.env
+ports: 
+- "${PORT}:21165"
+depends_on:
+      - mongo    
+      mongo-bridgerton:
+        condition: service_healthy
+environment:
+- NODE_ENV=development
+      - DATABASE_URL=mongodb://admin:mypass@mongo:27017/api_erp?authSource=admin
+      - DATABASE_URL=mongodb://admin:mypass@mongo-bridgerton:27017/api_erp_bridgerton?authSource=admin
+
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:21165/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+
+labels:
+- traefik.enable=true
+- traefik.http.routers.${SQUAD_NAME}-backend-http.rule=Host(`api-${SQUAD_NAME}.qacoders.dev.br`)
+@@ -52,24 +62,25 @@
+mem_limit: 128m
+cpus: "0.1"
+
+  mongo:
+  mongo-bridgerton:
+image: mongo:latest
+    container_name: mongo-bridgerton
+restart: always
+ports:
+- "2${PORT}:27017"
+environment:
+- MONGO_INITDB_ROOT_USERNAME=admin
+- MONGO_INITDB_ROOT_PASSWORD=mypass 
+volumes:
+      - mongo_data:/data/db
+      - mongo_data_bridgerton:/data/db
+networks:
+- traefik
+mem_limit: 128m
+cpus: "0.1"
+
+volumes:
+  mongo_data:
+  mongo_data_bridgerton:
+
+networks:
+traefik:
+external: true

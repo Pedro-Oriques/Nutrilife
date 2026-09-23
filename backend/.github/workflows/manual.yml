@@ -1,0 +1,28 @@
+name: Teste auto merge 
+
+on:
+  push:
+    branches: [ "master" ]
+    
+  workflow_dispatch:
+
+jobs:
+  accept_pull_request:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Accept Pull Request
+      run: |
+        # Configure o URL da API do GitHub para aceitar o Pull Request
+        API_URL="https://api.github.com/repos/seu-usuario/seu-segundo-repo/pulls/126/merge"
+        
+        # Use o token de acesso pessoal armazenado como segredo
+        GITHUB_TOKEN=$RACKATON_TOKEN
+        
+        # Envie uma solicitação POST com curl para aceitar o Pull Request
+        curl -X PUT -H "Authorization: token $GITHUB_TOKEN" $API_URL
+      env:
+        GITHUB_TOKEN_SECOND_REPO: ${{ secrets.GITHUB_TOKEN_SECOND_REPO }}

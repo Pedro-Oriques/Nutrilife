@@ -1,0 +1,55 @@
+---
+name: "Default Deploy"
+run-name: "${{github.ref_name}}: ${{github.run_id}}"
+
+defaults:
+  run:
+    shell: bash
+
+on: 
+  push:
+    branches:
+      - "main"
+
+jobs:
+  build_app_image:
+    name: "Build Image"
+    runs-on: [academy, vps, kinghost]
+    steps:
+      - name: "Checkout Code"
+        id: checkout_code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{github.ref}}
+          persist-credentials: true
+          fetch-depth: 1
+          fetch-tags: false
+          clean: true
+      
+      - name: "create Dockerfile"
+        id: create_dockerfile
+        run: | 
+          export PORTA="${{secrets.PORTA}}"
+          envsubst '$PORTA' < Dockerfile.template > Dockerfile
+          export SQUAD="${{vars.SQUAD_NAME}}"
+          envsubst '$SQUAD' < env.template > .env
+
+      - name: "create Docker Image"
+        id: create_docker_image
+        run: |
+          docker build -t "${{vars.IMG_NAME}}:${{github.run_id}}" .
+
+  deploy:
+    name: "Deploy App"
+    runs-on: [academy, vps, kinghost]
+    needs: [build_app_image]
+    steps:
+      - name: "Deploy New Version"
+        id: deploy_new_version
+        run: |
+          ${{github.workspace}}/.github/workflows/deploy.sh \
+          "${{vars.IMG_NAME}}" \
+          "${{vars.IMG_NAME}}:${{github.run_id}}" \
+          "${{github.workspace}}" \
+          "${{secrets.PORTA}}" \
+          "${{secrets.USER_PASS}}"
