@@ -25,7 +25,7 @@ COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
 
 # Variáveis de ambiente e porta
-ENV NODE_ENV=development
+ENV NODE_ENV=production
 EXPOSE 21165
 
 # Comando com loop de espera para o MongoDB estar pronto antes de iniciar

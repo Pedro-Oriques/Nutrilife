@@ -1,0 +1,17 @@
+# Docker Compose usado exclusivamente pelo CI (GitHub Actions)
+# Sobe apenas o MongoDB — o backend roda diretamente no runner para capturar logs de teste
+services:
+  mongo:
+    image: mongo:7
+    container_name: nutrilife-mongo-ci
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: mypass
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s

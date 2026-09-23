@@ -24,7 +24,8 @@ interface ResetPasswordData {
   confirmNewPassword: string;
 }
 
-const DEFAULT_API_URL = "https://api-bridgerton.qacoders.dev.br/api/";
+// Fallback apenas para desenvolvimento local — em produção defina NEXT_PUBLIC_API_URL
+const DEFAULT_API_URL = "http://localhost:21165/api/";
 
 function handleUnauthorized(status: number) {
   if (status === 401) {
