@@ -1,0 +1,23 @@
+# Arquivos gerados pelo Terraform — nunca commitar
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+*.tfstate
+*.tfstate.*
+
+# Variáveis com valores reais (use terraform.tfvars.example como referência)
+terraform.tfvars
+*.auto.tfvars
+
+# Arquivos de crash
+crash.log
+crash.*.log
+
+# Chaves e credenciais
+*.pem
+*.key
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json

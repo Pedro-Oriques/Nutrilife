@@ -1,0 +1,22 @@
+# Copie este arquivo para terraform.tfvars e preencha os valores reais.
+# O arquivo terraform.tfvars NUNCA deve ser commitado (.gitignore já o ignora).
+
+aws_region   = "us-east-1"
+environment  = "prod"
+project_name = "nutrilife"
+
+# Rede
+vpc_cidr             = "10.0.0.0/16"
+public_subnet_cidrs  = ["10.0.1.0/24", "10.0.2.0/24"]
+private_subnet_cidrs = ["10.0.10.0/24", "10.0.11.0/24"]
+availability_zones   = ["us-east-1a", "us-east-1b"]
+
+# ECS
+backend_cpu           = 256   # 0.25 vCPU
+backend_memory        = 512   # MB
+backend_desired_count = 1
+backend_port          = 3000
+backend_image_tag     = "latest"
+
+# Domínio (opcional — deixe vazio para usar só o DNS do ALB)
+domain_name = ""
